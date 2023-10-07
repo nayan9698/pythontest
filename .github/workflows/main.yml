@@ -21,7 +21,7 @@ jobs:
 
       - name: Upload ZIP Artifact on server
         run: |
-          echo ${{secrets.SSH_KEY}} > ssh-remote.pem
+          echo "${{secrets.SSH_KEY}}" > ssh-remote.pem
           chmod 400 ssh-remote.pem
           scp -i -P ${{secrets.SSH_PORT}} ssh-remote.pem $GITHUB_WORKSPACE/custom-addons.zip ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/data/artifact/custom-addons.zip
 

@@ -1,0 +1,47 @@
+name: Update custom-addons
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Create ZIP Artifact
+        run: |
+          zip -r custom-addons.zip custom-addons/ requirements.txt
+          mv custom-addons.zip $GITHUB_WORKSPACE
+        working-directory: ${{ github.workspace }}
+
+      - name: Upload ZIP Artifact on server
+        run: |
+          echo ${{secrets.SSH_KEY}} > ssh-remote.pem
+          chmod 400 ssh-remote.pem
+          scp -i -P ${{secrets.SSH_PORT}} ssh-remote.pem $GITHUB_WORKSPACE/custom-addons.zip ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/data/artifact/custom-addons.zip
+
+      - name: connect ssh
+        run: |
+          echo ${{secrets.SSH_KEY}} > ssh-remote.pem
+          chmod 400 ssh-remote.pem
+          ssh -i ssh-remote.pem -p "$SSH_PORT" "$SSH_USERNAME"@"${SSH_HOST}"
+        env:
+          SSH_HOST: ${{secrets.SSH_HOST}} # IP address of the server you wish to ssh into
+          SSH_USERNAME: ${{secrets.SSH_USERNAME}} # User of the server you want to ssh into
+          SSH_PORT: ${{secrets.SSH_PORT}} # SSH server port
+          
+      - name: Deploy Latest Code
+        run: |
+          cd /opt/odoo
+          unzip /data/artifact/custom-addons.zip -d /opt/odoo
+          sudo chown -R odoo:odoo !(.git|.gitignore|.github)
+          source odoo-venv/bin/activate
+          python3 -m pip install -r requirements.txt
+          deactivate
+          sudo systemctl restart odoo.service
+        shell: bash

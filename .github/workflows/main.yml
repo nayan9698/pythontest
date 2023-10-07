@@ -38,9 +38,9 @@ jobs:
           cd /opt/odoo
           sudo unzip -o /data/artifact/custom-addons.zip -d /opt/odoo
           sudo chown -R odoo:odoo /opt/odoo
-          sudo source odoo-venv/bin/activate
-          sudo python3 -m pip install -r requirements.txt
-          sudo deactivate
+          source odoo-venv/bin/activate
+          python3 -m pip install -r requirements.txt
+          deactivate
           sudo systemctl restart odoo.service
           EOF
         shell: bash

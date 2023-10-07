@@ -23,13 +23,13 @@ jobs:
         run: |
           echo "${{secrets.SSH_KEY}}" > ssh-remote.pem
           chmod 400 ssh-remote.pem
-          scp -i ssh-remote.pem -P ${{secrets.SSH_PORT}}  $GITHUB_WORKSPACE/custom-addons.zip ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/data/artifact/custom-addons.zip
+          scp -i ssh-remote.pem -P ${{secrets.SSH_PORT}} -o StrictHostKeyChecking=no $GITHUB_WORKSPACE/custom-addons.zip ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/data/artifact/custom-addons.zip
 
       - name: connect ssh
         run: |
           echo "${{secrets.SSH_KEY}}" > ssh-remote.pem
           chmod 400 ssh-remote.pem
-          ssh -i ssh-remote.pem -p "$SSH_PORT" "$SSH_USERNAME"@"${SSH_HOST}"
+          ssh -i ssh-remote.pem -p "$SSH_PORT" -o StrictHostKeyChecking=no "$SSH_USERNAME"@"${SSH_HOST}"
         env:
           SSH_HOST: ${{secrets.SSH_HOST}} # IP address of the server you wish to ssh into
           SSH_USERNAME: ${{secrets.SSH_USERNAME}} # User of the server you want to ssh into

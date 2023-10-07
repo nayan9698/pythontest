@@ -29,6 +29,7 @@ jobs:
         run: |
           echo "${{secrets.SSH_KEY}}" > ssh-remote.pem
           chmod 400 ssh-remote.pem
+          ls -la
           ssh -i ssh-remote.pem -p "$SSH_PORT" -o StrictHostKeyChecking=no "$SSH_USERNAME"@"${SSH_HOST}"
         env:
           SSH_HOST: ${{secrets.SSH_HOST}} # IP address of the server you wish to ssh into

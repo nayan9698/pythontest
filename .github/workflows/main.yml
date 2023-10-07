@@ -15,7 +15,7 @@ jobs:
 
       - name: Create ZIP Artifact
         run: |
-          rm -f custom-addons.zip
+          rm -f $GITHUB_WORKSPACE/custom-addons.zip
           zip -r custom-addons.zip custom-addons/ requirements.txt
           mv custom-addons.zip $GITHUB_WORKSPACE
         working-directory: ${{ github.workspace }}

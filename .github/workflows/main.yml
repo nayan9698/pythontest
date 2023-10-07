@@ -27,7 +27,7 @@ jobs:
 
       - name: connect ssh
         run: |
-          echo ${{secrets.SSH_KEY}} > ssh-remote.pem
+          echo "${{secrets.SSH_KEY}}" > ssh-remote.pem
           chmod 400 ssh-remote.pem
           ssh -i ssh-remote.pem -p "$SSH_PORT" "$SSH_USERNAME"@"${SSH_HOST}"
         env:
